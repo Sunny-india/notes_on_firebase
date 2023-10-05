@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:notes_app_on_firebase/task_checkbox.dart';
 
 import 'add_task_screen.dart';
 
@@ -39,14 +40,14 @@ class MyTaskPage extends StatelessWidget {
                       color: Colors.lightBlueAccent.shade200,
                     )),
                 const SizedBox(height: 10),
-                Text(
+                const Text(
                   'todoeys',
                   style: TextStyle(
                       fontSize: 50,
                       color: Colors.white,
                       fontWeight: FontWeight.w300),
                 ),
-                Text(
+                const Text(
                   '12 tasks',
                   style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
@@ -66,12 +67,9 @@ class MyTaskPage extends StatelessWidget {
               child: ListView.builder(
                   itemCount: 20,
                   itemBuilder: (context, index) {
-                    return ListTile(
-                      title: const Text('this is a task'),
-                      trailing: Checkbox(
-                        value: false,
-                        onChanged: (bool? value) {},
-                      ),
+                    return const ListTile(
+                      title: Text('this is a task'),
+                      trailing: TaskCheckbox(),
                     );
                   }),
             ),
