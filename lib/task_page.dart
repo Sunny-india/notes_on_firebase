@@ -1,20 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:notes_app_on_firebase/task_checkbox.dart';
-
 import 'add_task_screen.dart';
 
-class MyTaskPage extends StatelessWidget {
+class MyTaskPage extends StatefulWidget {
   const MyTaskPage({super.key});
 
+  @override
+  State<MyTaskPage> createState() => _MyTaskPageState();
+}
+
+class _MyTaskPageState extends State<MyTaskPage> {
   //modalBottomSheet
-  // have it passed as a pure function over there
   Widget buildBottomWidget(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: const AddTaskScreen()),
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context)
+                  .viewInsets
+                  .bottom), // viewInsets.bottom checks
+          // the size of the obscured area by keyboard or other layout, leaves space for that
+          // and take container's bottom where keyboard starts from.
+          child: AddTaskScreen()),
     );
   }
 
@@ -56,23 +62,33 @@ class MyTaskPage extends StatelessWidget {
           ),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
                 ),
-              ),
-              child: ListView.builder(
-                  itemCount: 20,
-                  itemBuilder: (context, index) {
-                    return const ListTile(
-                      title: Text('this is a task'),
-                      trailing: TaskCheckbox(),
-                    );
-                  }),
-            ),
+                child: ListView.builder(
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        shadowColor: Colors.lightBlueAccent.shade100,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        elevation: 2,
+                        child: const ListTile(
+                          title: Text(
+                            'this is a task',
+                          ),
+                          // trailing: Checkbox(
+                          //   value: false,
+                          //   onChanged: (bool? value) {},
+                          // ),
+                        ),
+                      );
+                    })),
           )
         ],
       ),
