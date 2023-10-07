@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:notes_app_on_firebase/model/notes_model.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
@@ -12,6 +13,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final TextEditingController taskController = TextEditingController();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool isClicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ),
               TextFormField(
                 controller: taskController,
-                //  autofocus: true, // automatically shows keyboard
+                // autofocus:
+                //     isClicked ? false : true, // automatically shows keyboard
                 textAlign:
                     TextAlign.center, // to grab cursor attention to center
                 validator: (value) {
@@ -56,51 +59,48 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 autovalidateMode: AutovalidateMode.onUserInteraction,
               ),
               const SizedBox(height: 10),
-              // TextFormField(
-              //   autofocus: true, // automatically shows keyboard
-              //   textAlign: TextAlign.center, // to grab cursor attention to center
-              // ),
-              // const SizedBox(height: 10),
-              // TextFormField(
-              //   autofocus: true, // automatically shows keyboard
-              //   textAlign: TextAlign.center, // to grab cursor attention to center
-              // ),
-              // const SizedBox(height: 10),
-              // TextFormField(
-              //   autofocus: true, // automatically shows keyboard
-              //   textAlign: TextAlign.center, // to grab cursor attention to center
-              // ),
-              // const SizedBox(height: 10),
-              // TextFormField(
-              //   autofocus: true, // automatically shows keyboard
-              //   textAlign: TextAlign.center, // to grab cursor attention to center
-              // ),
               const SizedBox(height: 10),
-              MaterialButton(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                textColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                color: Colors.lightBlueAccent,
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    print('Done');
-                    FirebaseFirestore firestore = FirebaseFirestore.instance;
-                    firestore.collection('notes').add({
-                      'task': taskController.text.toString(),
-                    }).whenComplete(() {
-                      setState(() {
-                        formKey.currentState!.reset();
-                        taskController.clear();
-                      });
-                    });
-                  }
-                },
-                child: const Text(
-                  'Add your Task',
-                  style: TextStyle(fontWeight: FontWeight.normal),
-                ),
-              ),
+              isClicked == true
+                  ? const Center(child: CircularProgressIndicator())
+                  : MaterialButton(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      textColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      color: Colors.lightBlueAccent,
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          setState(() {
+                            isClicked = true;
+                          });
+                          print('Done');
+                          FirebaseFirestore firestore =
+                              FirebaseFirestore.instance;
+                          firestore
+                              .collection('notes')
+                              .add(NoteModel(
+                                          task: taskController.text.toString())
+                                      .toJson()
+                                  //     {
+                                  //   'task': taskController.text.toString(),
+                                  // }
+
+                                  )
+                              .whenComplete(() {
+                            setState(() {
+                              formKey.currentState!.reset();
+                              taskController.clear();
+                              isClicked = false;
+                              Navigator.pop(context);
+                            });
+                          });
+                        }
+                      },
+                      child: const Text(
+                        'Add your Task',
+                        style: TextStyle(fontWeight: FontWeight.normal),
+                      ),
+                    ),
             ],
           ),
         ),
